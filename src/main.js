@@ -1,5 +1,5 @@
 const getPromptNumber = () => {
-    const number = prompt('Введіть число');
+    const number = prompt('Введіть число, яке буде висотою ялинки');
 
     if(number === null) {
         return;
@@ -13,30 +13,25 @@ const getPromptNumber = () => {
     return parseFloat(number);
 }
 
-const isPrimeNumber = (number) => {
-    if (number === 2 || number === 3) {
-        return true;
+const drawChristmasTreeHandler = (height, currentHeight = 1) => {
+    if (currentHeight > height) {
+        return '';
     }
+    const spaces = ' '.repeat(height - currentHeight);
+    const stars = '*'.repeat(2 * currentHeight - 1);
+    const nextLine = drawChristmasTreeHandler(height, currentHeight + 1);
 
-    if (number <= 1 || number % 2 === 0) {
-        return false;
-    }
-
-    const sqrtNumber = Math.sqrt(number);
-
-    for (let divisor = 3; divisor <= sqrtNumber; divisor += 2) {
-        if (number % divisor === 0) {
-            return false;
-        }
-    }
-
-    return true;
+    return spaces + stars + '\n' + nextLine;
 }
 
-const number = getPromptNumber();
+const drawChristmasTreeViewHandler = () => {
+    const drawChristmasTreeHeight = getPromptNumber();
 
-if(isPrimeNumber(number)) {
-    console.log(`Число ${number} є простим числом`);
-} else {
-    console.log(`Число ${number} не є простим числом`);
+    if(!drawChristmasTreeHeight) {
+        return;
+    }
+
+    alert(drawChristmasTreeHandler(drawChristmasTreeHeight));
 }
+
+drawChristmasTreeViewHandler();
