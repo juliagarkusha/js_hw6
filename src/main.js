@@ -1,10 +1,6 @@
 const getPromptNumber = () => {
     const number = prompt('Введіть число');
 
-    if(number === null) {
-        return;
-    }
-
     if(!number.length || isNaN(Number(number))) {
         alert('Ви ввели некоректне число. Спробуйте еще раз.');
         return getPromptNumber();
@@ -13,30 +9,39 @@ const getPromptNumber = () => {
     return parseFloat(number);
 }
 
-const isPrimeNumber = (number) => {
-    if (number === 2 || number === 3) {
-        return true;
-    }
-
-    if (number <= 1 || number % 2 === 0) {
+const isPerfectNumber = (number) => {
+    if (number <= 1) {
         return false;
     }
 
-    const sqrtNumber = Math.sqrt(number);
+    let sum = 1;
 
-    for (let divisor = 3; divisor <= sqrtNumber; divisor += 2) {
+    for (let divisor = 2; divisor * divisor <= number; divisor++) {
         if (number % divisor === 0) {
-            return false;
+            sum += divisor;
+
+            if (divisor !== number / divisor) {
+                sum += number / divisor;
+            }
         }
     }
 
-    return true;
+    return sum === number;
+}
+
+const findPerfectNumbersHandler = (number) => {
+    const perfectNumbers = [];
+
+    for (let i = 1; i <= number; i++) {
+        if (isPerfectNumber(i)) {
+            perfectNumbers.push(i);
+        }
+    }
+
+    return perfectNumbers;
 }
 
 const number = getPromptNumber();
+const perfectNumbers = findPerfectNumbersHandler(number);
 
-if(isPrimeNumber(number)) {
-    console.log(`Число ${number} є простим числом`);
-} else {
-    console.log(`Число ${number} не є простим числом`);
-}
+console.log(`Досконалі числа в діапазоні від 1 до ${number}:`, perfectNumbers);
