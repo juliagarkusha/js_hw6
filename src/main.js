@@ -1,42 +1,33 @@
-const getPromptNumber = () => {
-    const number = prompt('Введіть число');
+//Вам необхідно написати функцію reverseString(str), яка приймає на вхід рядок і повертає його у зворотному порядку
 
-    if(number === null) {
+const getPromptString = () => {
+    const string = prompt('Введіть рядок');
+
+    if(string === null) {
         return;
     }
 
-    if(!number.length || isNaN(Number(number))) {
-        alert('Ви ввели некоректне число. Спробуйте еще раз.');
-        return getPromptNumber();
+    if(!string.length) {
+        alert('Ви ввели некоректне значення. Спробуйте еще раз.');
+        return getPromptString();
     }
 
-    return parseFloat(number);
+    return string;
 }
 
-const isPrimeNumber = (number) => {
-    if (number === 2 || number === 3) {
-        return true;
-    }
+const reverseString = (str) => str.split('').reverse().join('');
 
-    if (number <= 1 || number % 2 === 0) {
-        return false;
-    }
+const string = getPromptString();
 
-    const sqrtNumber = Math.sqrt(number);
+reverseString(string);
+console.log('Введений рядок у зворотньому порядку', reverseString(string));
 
-    for (let divisor = 3; divisor <= sqrtNumber; divisor += 2) {
-        if (number % divisor === 0) {
-            return false;
-        }
-    }
+//Вам необхідно написати функцію isPalindrome(str), яка приймає на вхід рядок і перевіряє, чи є введений рядок паліндромом.
 
-    return true;
-}
+// Щоб не дублювати код, можна взяти:
+// як введений рядок const string (строка 20)
+// для порівння використати ф-цію reverseString (строка 18)
+// і порівняти введену строку і результат ф-ції reverseString
 
-const number = getPromptNumber();
-
-if(isPrimeNumber(number)) {
-    console.log(`Число ${number} є простим числом`);
-} else {
-    console.log(`Число ${number} не є простим числом`);
-}
+const isPalindrome = (str) => str === reverseString(str);
+console.log('Чи є введений рядок паліндромом?', isPalindrome(string));
