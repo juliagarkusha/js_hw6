@@ -1,29 +1,20 @@
-// Вам необхідно написати функцію padString(str, length, symbol, toLeft),
-// яка приймає на вхід рядок, число, що є довгим рядком, який ми хочемо
-// отримати в результаті та символ, яким доповниться рядок, якщо це буде
-// потрібно, четвертим параметром є буремний «прапор», чи додавати символи
-// зліва або справа(за замовчуванням). Якщо 2 параметр менше, ніж довжина
-// вихідного рядка, то виводимо вихідний рядок без змін. Приклад виклику:
-// padString('Ivan', 6, '*') // 'Ivan**'.
+// Вам необхідно написати функцію camelCase(str, separator),
+// яка приймає на вхід рядок і перетворює його до формату «camelCase»
 
-const string = prompt('Введіть рядок');
-const number = Number(prompt('Введіть число'));
-const symbol = prompt('Введіть символ');
+const string = 'приклад_рядку_з_роздільником';
+const separator = '_';
 
-const padString = (str, length, symbol, toLeft = false) => {
-    if (toLeft) {
-        while (str.length < length) {
-            str = symbol + str;
+const camelCase = (str, separator) => {
+    const words = str.split(separator).map((word, index) => {
+        if (index !== 0) {
+            return word.charAt(0).toUpperCase() + word.slice(1);
         }
-    } else {
-        while (str.length < length) {
-            str = str + symbol;
-        }
-    }
+        return word;
+    });
 
-    return str;
+    return words.join('');
 }
 
-const result = padString(string, number, symbol);
+const result = camelCase(string, separator);
 
 console.log(result);
