@@ -1,14 +1,29 @@
-// Вам необхідно написати функцію doubleLetter(str),
-// яка приймає на вхід рядок і повертає новий рядок,
-// у якому кожен символ повторюється двічі hello ⇒ hheelllloo
+// Вам необхідно написати функцію padString(str, length, symbol, toLeft),
+// яка приймає на вхід рядок, число, що є довгим рядком, який ми хочемо
+// отримати в результаті та символ, яким доповниться рядок, якщо це буде
+// потрібно, четвертим параметром є буремний «прапор», чи додавати символи
+// зліва або справа(за замовчуванням). Якщо 2 параметр менше, ніж довжина
+// вихідного рядка, то виводимо вихідний рядок без змін. Приклад виклику:
+// padString('Ivan', 6, '*') // 'Ivan**'.
 
-const string = prompt('Enter string');
+const string = prompt('Введіть рядок');
+const number = Number(prompt('Введіть число'));
+const symbol = prompt('Введіть символ');
 
-const doubleLetter = (str) => {
-    let chars = str.split('');
-    let doubledChars = chars.map(char => char + char);
+const padString = (str, length, symbol, toLeft = false) => {
+    if (toLeft) {
+        while (str.length < length) {
+            str = symbol + str;
+        }
+    } else {
+        while (str.length < length) {
+            str = str + symbol;
+        }
+    }
 
-    return doubledChars.join('');
+    return str;
 }
 
-console.log(`Ось новий рядок, в якому кожен введений символ повторюється двічі: ${doubleLetter(string)}`);
+const result = padString(string, number, symbol);
+
+console.log(result);
