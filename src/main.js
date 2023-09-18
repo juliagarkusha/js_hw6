@@ -1,33 +1,17 @@
-//Вам необхідно написати функцію reverseString(str), яка приймає на вхід рядок і повертає його у зворотному порядку
+//Вам необхідно написати функцію findGCD(a, b), яка приймає на вхід два числа і повертає їхній НСД
 
-const getPromptString = () => {
-    const string = prompt('Введіть рядок');
+const numberA = Number(prompt('Enter operand A'));
+const numberB = Number(prompt('Enter operand B'));
 
-    if(string === null) {
-        return;
+const findGCD = (a, b) => {
+    while (b !== 0) {
+        const temp = b;
+        b = a % b;
+        a = temp;
     }
 
-    if(!string.length) {
-        alert('Ви ввели некоректне значення. Спробуйте еще раз.');
-        return getPromptString();
-    }
-
-    return string;
+    return a;
 }
 
-const reverseString = (str) => str.split('').reverse().join('');
+console.log(`НСД для чисел ${numberA} та ${numberB} є число: ${findGCD(numberA, numberB)}`);
 
-const string = getPromptString();
-
-reverseString(string);
-console.log('Введений рядок у зворотньому порядку', reverseString(string));
-
-//Вам необхідно написати функцію isPalindrome(str), яка приймає на вхід рядок і перевіряє, чи є введений рядок паліндромом.
-
-// Щоб не дублювати код, можна взяти:
-// як введений рядок const string (строка 20)
-// для порівння використати ф-цію reverseString (строка 18)
-// і порівняти введену строку і результат ф-ції reverseString
-
-const isPalindrome = (str) => str === reverseString(str);
-console.log('Чи є введений рядок паліндромом?', isPalindrome(string));
