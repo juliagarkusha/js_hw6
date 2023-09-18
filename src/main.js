@@ -1,42 +1,14 @@
-const getPromptNumber = () => {
-    const number = prompt('Введіть число');
+// Вам необхідно написати функцію doubleLetter(str),
+// яка приймає на вхід рядок і повертає новий рядок,
+// у якому кожен символ повторюється двічі hello ⇒ hheelllloo
 
-    if(number === null) {
-        return;
-    }
+const string = prompt('Enter string');
 
-    if(!number.length || isNaN(Number(number))) {
-        alert('Ви ввели некоректне число. Спробуйте еще раз.');
-        return getPromptNumber();
-    }
+const doubleLetter = (str) => {
+    let chars = str.split('');
+    let doubledChars = chars.map(char => char + char);
 
-    return parseFloat(number);
+    return doubledChars.join('');
 }
 
-const isPrimeNumber = (number) => {
-    if (number === 2 || number === 3) {
-        return true;
-    }
-
-    if (number <= 1 || number % 2 === 0) {
-        return false;
-    }
-
-    const sqrtNumber = Math.sqrt(number);
-
-    for (let divisor = 3; divisor <= sqrtNumber; divisor += 2) {
-        if (number % divisor === 0) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-const number = getPromptNumber();
-
-if(isPrimeNumber(number)) {
-    console.log(`Число ${number} є простим числом`);
-} else {
-    console.log(`Число ${number} не є простим числом`);
-}
+console.log(`Ось новий рядок, в якому кожен введений символ повторюється двічі: ${doubleLetter(string)}`);
