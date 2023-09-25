@@ -1,37 +1,7 @@
-// Вам необхідно написати функцію, яка приймає на вхід масив чисел
-// і повертає новий масив, що містить тільки ті числа, які є простими числами.
-
-const isPrime = (number) => {
-    if (number <= 1) {
-        return false;
-    }
-
-    if (number <= 3) {
-        return true;
-    }
-
-    if (number % 2 === 0 || number % 3 === 0) {
-        return false;
-    }
-
-    for (let i = 5; i * i <= number; i += 6) {
-        if (number % i === 0 || number % (i + 2) === 0) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-const getPrimes = (array) => array.filter(isPrime);
-
-const numbers = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-const primeNumbers = getPrimes(numbers);
-console.log(`Массив простих чисел: ${primeNumbers}`);
-
-// Вам необхідно написати функцію, яка приймає на вхід масив об'єктів, де кожен об'єкт описує
-// сповіщення та має поля source / text / date. Вам необхідно перетворити цей масив на об'єкт,
-// де ключем буде джерело сповіщення, а значенням - масив сповіщень із цього джерела.
+// Вам необхідно використовувати масив нотифікацій з минулих занять.
+// До отриманого під час групування об'єкта notifications, вам необхідно додати ітератор,
+// щоб під час перебору в циклі for of ми отримували кожен елемент із вкладених
+// списків об'єкта notifications таким чином, немов працюємо з "плоским" масивом.
 
 const groupCatsBySource = (cats) => {
     const catsBySource = {};
@@ -46,7 +16,9 @@ const groupCatsBySource = (cats) => {
         catsBySource[source].push({ name, breed, age });
     }
 
-    return catsBySource;
+    return Object.values(catsBySource).reduce((acc, catGroup) => {
+        return acc.concat(catGroup);
+    }, []);
 }
 
 const cats = [
@@ -54,41 +26,51 @@ const cats = [
     { source: 'Вулиця', name: 'Барсик', breed: 'Невідома', age: 3 },
     { source: 'Приют', name: 'Вася', breed: 'Сіамська', age: 1 },
     { source: 'Друг', name: 'Мурка', breed: 'Британська', age: 4 },
+    { source: 'Друг', name: 'Рижик', breed: 'Невідома', age: 2 },
+    { source: 'Приют', name: 'Сімка', breed: 'Персидська', age: 3 },
+    { source: 'Вулиця', name: 'Том', breed: 'Невідома', age: 1 },
+    { source: 'Приют', name: 'Міша', breed: 'Британська', age: 5 },
+    { source: 'Друг', name: 'Лізка', breed: 'Сіамська', age: 2 },
+    { source: 'Приют', name: 'Вовка', breed: 'Британська', age: 4 },
+    { source: 'Вулиця', name: 'Леопольд', breed: 'Сіамська', age: 3 },
+    { source: 'Приют', name: 'Ромка', breed: 'Персидська', age: 2 },
 ];
 
-const groupedCats = groupCatsBySource(cats);
-console.log('Котики, згруповані за джерелом, з якого отримали котика: ', groupedCats);
+const allCats = groupCatsBySource(cats);
+console.log('Усі котики, згруповані за джерелом, з якого отримали котика: ', allCats);
 
-// Вам необхідно написати функцію, яка приймає на вхід масив і повністю повторює поведінку методу масиву group (якби він був)
+// Вам необхідно реалізувати функцію memoize(fn), яка приймає вхід функцію і додає їй можливість
+// кешування результатів виконання, щоб уникнути повторних обчислень. Це означає, що в разі,
+// коли функція викликається з однаковими параметрами, то результат необхідно брати з кешу.
+//(Тільки примітиви у параметрах та використовуйте Map)
 
-const groupBy = (arr, keyFn) => {
-    return arr.reduce((acc, item) => {
-        const key = keyFn(item);
+const memoize = (fn) => {
+    const cache = new Map();
 
-        if (!acc[key]) {
-            acc[key] = [];
+    return function (...args) {
+        const key = JSON.stringify(args);
+
+        if (cache.has(key)) {
+            return cache.get(key);
+        } else {
+            const result = fn(...args);
+            cache.set(key, result);
+            return result;
         }
-
-        acc[key].push(item);
-
-        return acc;
-    }, {});
+    };
 }
 
-const catsArray = [
-    { name: 'Мурчик', breed: 'Персидська', color: 'сірий' },
-    { name: 'Барсик', breed: 'Невідома', color: 'чорний' },
-    { name: 'Вася', breed: 'Сіамська', color: 'коричневий' },
-    { name: 'Мурка', breed: 'Британська', color: 'білий' },
-    { name: 'Леопольд', breed: 'Сіамська', color: 'коричневий' },
-    { name: 'Ромка', breed: 'Персидська', color: 'чорний' },
-    { name: 'Міша', breed: 'Британська', color: 'сірий' },
-    { name: 'Том', breed: 'Невідома', color: 'рожевий' },
-    { name: 'Сімка', breed: 'Персидська', color: 'білий' },
-    { name: 'Вовка', breed: 'Британська', color: 'чорний' },
-    { name: 'Рижик', breed: 'Невідома', color: 'рудий' },
-    { name: 'Лізка', breed: 'Сіамська', color: 'коричневий' },
-];
+function processCats(cats) {
+    console.log('Обробка котиків...');
+    return cats.length;
+}
 
-const groupedByBreed = groupBy(catsArray, cat => cat.breed);
-console.log('Котики, згруповані за породами: ', groupedByBreed);
+const memoizedProcessCats = memoize(processCats);
+
+const cats1 = [{ name: 'Мурчик', age: 3 }, { name: 'Барсик', age: 2 }];
+const cats2 = [{ name: 'Вася', age: 1 }, { name: 'Мурка', age: 4 }];
+
+console.log(memoizedProcessCats(cats1)); // Обробка котиків...
+console.log(memoizedProcessCats(cats1)); // Результат взятий з кешу
+console.log(memoizedProcessCats(cats2)); // Обробка котиків...
+console.log(memoizedProcessCats(cats2)); // Результат взятий з кешу
