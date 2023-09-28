@@ -15,7 +15,6 @@ function feedCat(catName, food) {
 
 const loggedFeedCat = logArguments(feedCat);
 
-// Викликаємо функцію з логуванням аргументів
 loggedFeedCat("Сімона", "паштет"); // "Arguments: ["Сімона", "паштет"]" і "Сімона їсть паштет"
 
 // validate
