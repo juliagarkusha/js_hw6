@@ -1,53 +1,56 @@
-// logArguments
-// Вам необхідно написати функцію-декоратор logArguments(fn), яка приймає на вхід функцію
-// і додає можливість логувати всі аргументи, передані у функцію-аргумент.
+// Вам необхідно написати функцію summarize(num), яка приймає на вхід число і повертає функцію,
+// яка під час виклику додає це число до аргументу і повертає результат.
+// Якщо аргумент не передано, то додається одиниця.
+// Наприклад, якщо функція викликається з аргументом 5, то функція, що повертається,
+// повинна при виклику з аргументом 3 повернути 8 (тому що 3 + 5 = 8) або 6, якщо аргумент не буде передано.
 
-function logArguments(fn) {
-    return function (...args) {
-        console.log("Arguments:", args);
-        return fn(...args);
+/**
+ *
+ * @param num
+ * @returns {function(x: number): number}
+ */
+const summarize = (num) => (x = 1) => x + num;
+
+console.log('debug : ', summarize(5)(3)); // Виведе 8 (3 + 5)
+console.log('debug : ', summarize(5)()); // Виведе 6 (5 + 1)
+
+// Вам необхідно написати функцію counter(startValue, step), яка приймає на вхід два параметри -
+// стартове значення лічильника і його крок. Функція повертає нову функцію,
+// яка при кожному виклику збільшує лічильник на значення і повертає його поточне значення.
+// Лічильник повинен мати методи increment, decrement і reset,
+// які збільшують або зменшують значення на step і скидають значення до стартового, відповідно.
+
+const counter = (startValue, step) => {
+    let currentValue = startValue;
+
+    const event = () => {
+        currentValue += step;
+        return currentValue;
     };
-}
 
-function feedCat(catName, food) {
-    console.log(`${catName} їсть ${food}`);
-}
-
-const loggedFeedCat = logArguments(feedCat);
-
-loggedFeedCat("Сімона", "паштет"); // "Arguments: ["Сімона", "паштет"]" і "Сімона їсть паштет"
-
-// validate
-// Вам необхідно написати функцію-декоратор validate(fn, validator), яка приймає на вхід функцію
-// і додає можливість перевіряти аргументи, передані у функцію fn, на відповідність заданому validator.
-// Якщо аргументи не проходять перевірку, то декоратор має викидати виняток.
-
-function validate(fn, validator) {
-    return function (...args) {
-        for (const arg of args) {
-            if (!validator(arg)) {
-                throw new Error(`Invalid argument: ${arg}`);
-            }
-        }
-        return fn(...args);
+    event.increment = () => {
+        currentValue += step;
+        return currentValue;
     };
+
+    event.decrement = () => {
+        currentValue -= step;
+        return currentValue;
+    };
+
+    event.reset = () => {
+        currentValue = startValue;
+        return currentValue;
+    };
+
+    return event;
 }
 
-function isCat(cat) {
-    return cat && typeof cat === 'object' && cat.hasOwnProperty('name') && typeof cat.name === 'string';
-}
-
-// Приклад функції для роботи з котиками
-function petCat(cat) {
-    console.log(`Ваш котик - ${cat.name}!`);
-}
-
-// Застосовуємо декоратор до функції petCat
-const validatedPetCat = validate(petCat, isCat);
-
-// Приклади використання
-const validCat = { name: 'Сімона' };
-const invalidCat = { age: 3 };
-
-validatedPetCat(validCat);
-validatedPetCat(invalidCat);
+const myCounter = counter(0, 1); // Початкове значення - 0, крок - 1
+console.log(myCounter()); // 1
+console.log(myCounter()); // 2
+console.log(myCounter()); // 3
+console.log(myCounter()); // 4
+console.log(myCounter()); // 5
+console.log(myCounter.decrement()); // 4
+console.log(myCounter.reset());     // Повертає 0
