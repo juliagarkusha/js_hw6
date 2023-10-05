@@ -1,56 +1,170 @@
-// Вам необхідно написати функцію summarize(num), яка приймає на вхід число і повертає функцію,
-// яка під час виклику додає це число до аргументу і повертає результат.
-// Якщо аргумент не передано, то додається одиниця.
-// Наприклад, якщо функція викликається з аргументом 5, то функція, що повертається,
-// повинна при виклику з аргументом 3 повернути 8 (тому що 3 + 5 = 8) або 6, якщо аргумент не буде передано.
-
-/**
- *
- * @param num
- * @returns {function(x: number): number}
- */
-const summarize = (num) => (x = 1) => x + num;
-
-console.log('debug : ', summarize(5)(3)); // Виведе 8 (3 + 5)
-console.log('debug : ', summarize(5)()); // Виведе 6 (5 + 1)
-
-// Вам необхідно написати функцію counter(startValue, step), яка приймає на вхід два параметри -
-// стартове значення лічильника і його крок. Функція повертає нову функцію,
-// яка при кожному виклику збільшує лічильник на значення і повертає його поточне значення.
-// Лічильник повинен мати методи increment, decrement і reset,
-// які збільшують або зменшують значення на step і скидають значення до стартового, відповідно.
-
-const counter = (startValue, step) => {
-    let currentValue = startValue;
-
-    const event = () => {
-        currentValue += step;
-        return currentValue;
+const Student = function (firstName, lastName, birthYear) {
+    this.id = `st_${Date.now()}`;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.birthYear = birthYear;
+    this.courses = [];
+    this.addCourse = (courseId, lessonsCount) => {
+        const id = courseId;
+        this.courses.push({
+            id,
+            marks: (new Array(lessonsCount)).fill(''),
+            visited: (new Array(lessonsCount)).fill(''),
+            currentLessonNumber: 0,
+        });
+        return id;
     };
+    this.replaceCourse = (prevCourseId, newCourseId, newLessonsCount) => {
+        const id = newCourseId;
+        this.courses = this.courses.map((course) => {
+            if (course.id === prevCourseId) {
+                return {
+                    id,
+                    marks: (new Array(newLessonsCount)).fill(''),
+                    visited: (new Array(newLessonsCount)).fill(''),
+                    currentLessonNumber: 0,
+                }
+            }
 
-    event.increment = () => {
-        currentValue += step;
-        return currentValue;
+            return course;
+        });
+        return id;
     };
-
-    event.decrement = () => {
-        currentValue -= step;
-        return currentValue;
+    this.removeCourse = (courseId) => {
+        this.courses = this.courses.filter((course) => course.id !== courseId);
     };
+    this.addMarkForCourse = (courseId, lessonNumber, mark) => {
+        const courseIndex = this.courses.findIndex((course) => course.id === courseId);
 
-    event.reset = () => {
-        currentValue = startValue;
-        return currentValue;
+        if (courseIndex === -1) {
+            return;
+        }
+
+        this.courses[courseIndex].currentLessonNumber = this.courses[courseIndex].currentLessonNumber >= lessonNumber
+            ? this.courses[courseIndex].currentLessonNumber
+            : lessonNumber;
+        this.courses.forEach((course, index) => {
+            if (course.id === courseId && typeof course.marks[lessonNumber - 1] !== 'undefined') {
+                this.courses[index].marks[lessonNumber - 1] = mark;
+            }
+        });
     };
+    this.addVisitedForCourse = (courseId, lessonNumber, visited) => {
+        const courseIndex = this.courses.findIndex((course) => course.id === courseId);
 
-    return event;
+        if (courseIndex === -1) {
+            return;
+        }
+
+        this.courses[courseIndex].currentLessonNumber = this.courses[courseIndex].currentLessonNumber >= lessonNumber
+            ? this.courses[courseIndex].currentLessonNumber
+            : lessonNumber;
+        this.courses.forEach((course, index) => {
+            if (course.id === courseId && typeof course.visited[lessonNumber - 1] !== 'undefined') {
+                this.courses[index].visited[lessonNumber - 1] = visited;
+            }
+        });
+    };
+    this.getAverageCourseMark = (courseId) => {
+        const course = this.courses.find((course) => course.id === courseId);
+        if (!course) {
+            return;
+        }
+        const finishedLessonMarks = course.marks.slice(0, course.currentLessonNumber);
+        return finishedLessonMarks.reduce((acc, mark) => acc + mark, 0) / finishedLessonMarks.length;
+    }
+    this.getAverageCourseVisited = (courseId) => {
+        const course = this.courses.find((course) => course.id === courseId);
+        if (!course) {
+            return;
+        }
+        const finishedLessons = course.visited.slice(0, course.currentLessonNumber);
+        const visitedLessons = finishedLessons.filter((visited) => visited);
+        return (visitedLessons.length / finishedLessons.length) * 100;
+    }
+
+    return this.id;
 }
 
-const myCounter = counter(0, 1); // Початкове значення - 0, крок - 1
-console.log(myCounter()); // 1
-console.log(myCounter()); // 2
-console.log(myCounter()); // 3
-console.log(myCounter()); // 4
-console.log(myCounter()); // 5
-console.log(myCounter.decrement()); // 4
-console.log(myCounter.reset());     // Повертає 0
+const Group = function () {
+    this.students = [];
+    this.addStudent = (student) => {
+        this.students.push(student);
+        return this.students;
+    }
+    this.removeStudent = (studentId) => {
+        return this.students.filter(student => student.id !== studentId);
+    }
+    this.ratingByMarks = (courseId) => {
+        const list = this.students.map((student) => student);
+        list.sort((studentA, studentB) => studentA.getAverageCourseMark(courseId) - studentB.getAverageCourseMark(courseId))
+        return list;
+    }
+    this.ratingByVisited = (courseId) => {
+        const list = this.students.map((student) => student);
+        list.sort((studentA, studentB) => studentB.getAverageCourseVisited(courseId) - studentA.getAverageCourseVisited(courseId));
+        return list;
+    }
+}
+
+
+const student1 = new Student('Rick', 'Sanchez', 1976);
+const student2 = new Student('Morty', 'Smith', 2004);
+const student3 = new Student('Summer', 'Smith', 2001);
+const student4 = new Student('Tammy', 'Guetermann', 1999);
+const groupA = new Group();
+const groupB = new Group();
+student1.addCourse('course1', 5);
+student2.addCourse('course1', 5);
+
+student1.addMarkForCourse('course1', 1, 5);
+student1.addMarkForCourse('course1', 2, 2);
+student1.addMarkForCourse('course1', 3, 4);
+student1.addMarkForCourse('course1', 4, 4);
+
+student2.addMarkForCourse('course1', 1, 5);
+student2.addMarkForCourse('course1', 2, 5);
+student2.addMarkForCourse('course1', 3, 5);
+student2.addMarkForCourse('course1', 4, 5);
+
+student1.addVisitedForCourse('course1', 1, true);
+student1.addVisitedForCourse('course1', 2, true);
+student1.addVisitedForCourse('course1', 3, false);
+student1.addVisitedForCourse('course1', 4, true);
+
+student2.addMarkForCourse('course1', 1, false);
+student2.addMarkForCourse('course1', 2, true);
+student2.addMarkForCourse('course1', 3, false);
+student2.addMarkForCourse('course1', 4, false);
+
+
+student3.addMarkForCourse('course1', 1, 1);
+student3.addMarkForCourse('course1', 2, 2);
+student3.addMarkForCourse('course1', 3, 2);
+student3.addMarkForCourse('course1', 4, 5);
+
+student4.addMarkForCourse('course1', 1, 1);
+student4.addMarkForCourse('course1', 2, 3);
+student4.addMarkForCourse('course1', 3, 3);
+student4.addMarkForCourse('course1', 4, 4);
+
+student3.addVisitedForCourse('course1', 1, true);
+student3.addVisitedForCourse('course1', 2, true);
+student3.addVisitedForCourse('course1', 3, false);
+student3.addVisitedForCourse('course1', 4, false);
+
+student4.addMarkForCourse('course1', 1, false);
+student4.addMarkForCourse('course1', 2, false);
+student4.addMarkForCourse('course1', 3, false);
+student4.addMarkForCourse('course1', 4, false);
+
+
+groupA.addStudent(student1);
+groupA.addStudent(student2);
+groupB.addStudent(student3);
+groupB.addStudent(student4);
+
+console.log('debug \'groupA.ratingByMarks(\'course1\'):\' ', groupA.ratingByMarks('course1'));
+console.log('debug \'groupA.ratingByMarks(\'course1\'):\' ', groupA.ratingByMarks('course1'));
+console.log('debug \'groupB.ratingByMarks(\'course1\'):\' ', groupB.ratingByMarks('course1'));
+console.log('debug \'groupB.ratingByMarks(\'course1\'):\' ', groupB.ratingByMarks('course1'));
